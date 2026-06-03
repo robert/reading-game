@@ -151,7 +151,7 @@ function buildWeek(n) {
     // --- Section 1: sound recap (just repeat the sound a few times) ---
     const soundCards = [];
     const thisNote = week.status === "review" ? "this week (review)" : "this week";
-    for (let r = 0; r < 3; r++) {
+    for (let r = 0; r < 2; r++) {
       soundCards.push({ text: week.digraph, type: "digraph", note: r === 0 ? thisNote : "" });
     }
     const recapWeek = recapDigraphFor(week, d);
