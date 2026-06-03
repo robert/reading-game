@@ -148,16 +148,16 @@ function buildWeek(n) {
   for (let d = 0; d < days; d++) {
     const dayRng = makeRng(n * 1000 + d);
 
-    // --- Section 1: sound recap ---
-    const soundCards = [
-      { text: week.digraph, type: "digraph", note: week.status === "review" ? "this week (review)" : "this week" }
-    ];
-    week.examples.forEach(ex => soundCards.push({ text: ex, type: "word" }));
+    // --- Section 1: sound recap (just repeat the sound a few times) ---
+    const soundCards = [];
+    const thisNote = week.status === "review" ? "this week (review)" : "this week";
+    for (let r = 0; r < 3; r++) {
+      soundCards.push({ text: week.digraph, type: "digraph", note: r === 0 ? thisNote : "" });
+    }
     const recapWeek = recapDigraphFor(week, d);
     if (recapWeek) {
-      soundCards.push({ text: recapWeek.digraph, type: "digraph", note: "remember this one?" });
-      if (recapWeek.examples && recapWeek.examples[0]) {
-        soundCards.push({ text: recapWeek.examples[0], type: "word" });
+      for (let r = 0; r < 2; r++) {
+        soundCards.push({ text: recapWeek.digraph, type: "digraph", note: r === 0 ? "remember this one?" : "" });
       }
     }
 
@@ -174,14 +174,14 @@ function buildWeek(n) {
     }
     const sightCards = [];
     const sightSeen = new Set();
-    const pushSight = (word, isNew) => {
+    const pushSight = (word) => {
       if (!word || sightSeen.has(word)) return;
       sightSeen.add(word);
-      sightCards.push({ text: word, type: "sight", note: isNew ? "new!" : "" });
+      sightCards.push({ text: word, type: "sight", note: "" });
     };
-    pushSight(todaysNew, true);
-    weekSights.forEach(w => pushSight(w, false));
-    past2.forEach(w => pushSight(w, false));
+    pushSight(todaysNew);
+    weekSights.forEach(w => pushSight(w));
+    past2.forEach(w => pushSight(w));
 
     // --- Section 3: words ---
     let dayWords = curDeal[d].slice();

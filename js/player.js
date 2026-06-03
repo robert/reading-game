@@ -45,7 +45,6 @@ document.addEventListener("DOMContentLoaded", function () {
   let cardIndex = 0;
   let isDragging = false;
   let arrowOffset = 0;
-  let sizeMode = "normal"; // normal | big | small
 
   dayTitle.textContent = "Week " + built.week.n + " · " + built.week.digraph +
     " · Day " + dayN;
@@ -63,13 +62,23 @@ document.addEventListener("DOMContentLoaded", function () {
   function buildBreadcrumb() {
     breadcrumb.innerHTML = "";
     sections.forEach((s, i) => {
-      const el = document.createElement("div");
+      const el = document.createElement("button");
       el.className = "crumb";
       if (i < sectionIndex) el.classList.add("done");
       if (i === sectionIndex) el.classList.add("current");
       el.textContent = s.label;
+      el.onclick = () => goToSection(i);
       breadcrumb.appendChild(el);
     });
+  }
+
+  function goToSection(i) {
+    if (i === sectionIndex) return;
+    sectionIndex = i;
+    cardIndex = 0;
+    buildBreadcrumb();
+    initDots();
+    displayCard();
   }
 
   function initDots() {
@@ -97,38 +106,33 @@ document.addEventListener("DOMContentLoaded", function () {
     return sections[sectionIndex].cards[cardIndex];
   }
 
-  // Auto-fit font so the text fits on one line within the viewport.
+  // Auto-fit font so the text fits on one line, then make the bar span just
+  // the width of the word/digraph.
   function fitText() {
     const card = currentCard();
     wordArea.classList.remove("type-digraph", "type-word", "type-sight", "type-sentence");
     wordArea.classList.add("type-" + card.type);
 
-    // base sizes by type and current size mode
-    const bases = {
-      digraph: { normal: 200, big: 320, small: 120 },
-      word:    { normal: 120, big: 240, small: 70 },
-      sight:   { normal: 120, big: 240, small: 70 },
-      sentence:{ normal: 64,  big: 96,  small: 40 }
-    };
-    let size = bases[card.type][sizeMode];
+    const bases = { digraph: 200, word: 120, sight: 120, sentence: 64 };
+    let size = bases[card.type];
     wordElement.style.fontSize = size + "px";
 
-    // shrink to fit width
     const maxWidth = Math.min(window.innerWidth * 0.86, 1100);
-    // measure on next frame-ish (synchronous reflow is fine here)
     let guard = 0;
     while (wordElement.scrollWidth > maxWidth && size > 18 && guard < 200) {
       size -= 4;
       wordElement.style.fontSize = size + "px";
       guard++;
     }
+
+    // Bar spans exactly the rendered word width.
+    arrowTrack.style.width = Math.round(wordElement.getBoundingClientRect().width) + "px";
   }
 
   function displayCard() {
     const card = currentCard();
     sectionLabel.textContent = sections[sectionIndex].label;
     cardNote.textContent = card.note || "";
-    cardNote.classList.toggle("badge", card.note === "new!");
 
     wordElement.innerHTML = "";
     const text = card.text;
@@ -286,14 +290,6 @@ document.addEventListener("DOMContentLoaded", function () {
     }
   };
   playAgainBtn.onclick = restart;
-
-  bigModeBtn.onclick = function () {
-    sizeMode = sizeMode === "normal" ? "big" : sizeMode === "big" ? "small" : "normal";
-    bigModeBtn.classList.toggle("active", sizeMode === "big");
-    bigModeBtn.classList.toggle("small-active", sizeMode === "small");
-    fitText();
-    resetArrow();
-  };
 
   arrowElement.addEventListener("mousedown", startDrag);
   arrowElement.addEventListener("touchstart", startDrag, { passive: false });
