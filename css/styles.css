@@ -99,7 +99,6 @@ body {
   display: flex; flex-direction: column; align-items: center; gap: 18px;
   position: relative;
 }
-.section-label { font-size: 20px; font-weight: 700; color: #8e7bb5; }
 .card-note { font-size: 18px; font-weight: 700; color: #95a5a6; min-height: 22px; }
 
 .word {

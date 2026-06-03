@@ -22,7 +22,6 @@ document.addEventListener("DOMContentLoaded", function () {
   // ---- elements ----
   const dayTitle = document.getElementById("dayTitle");
   const breadcrumb = document.getElementById("breadcrumb");
-  const sectionLabel = document.getElementById("sectionLabel");
   const cardNote = document.getElementById("cardNote");
   const wordElement = document.getElementById("word");
   const wordArea = document.getElementById("wordArea");
@@ -131,7 +130,6 @@ document.addEventListener("DOMContentLoaded", function () {
 
   function displayCard() {
     const card = currentCard();
-    sectionLabel.textContent = sections[sectionIndex].label;
     cardNote.textContent = card.note || "";
 
     wordElement.innerHTML = "";
