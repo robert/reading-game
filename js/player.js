@@ -119,8 +119,7 @@ document.addEventListener("DOMContentLoaded", function () {
         mascot(i) +
         '<div class="tile-num">' + (i + 1) + "</div>" +
         (done ? '<div class="tile-star">⭐</div>' : "") +
-        (isActive ? '<div class="tile-play"><svg viewBox="0 0 24 24" width="34" height="34" fill="#fff"><path d="M8 5v14l11-7z"/></svg></div>' : "") +
-        (locked ? '<div class="tile-lock">🔒</div>' : "");
+        (isActive ? '<div class="tile-play"><svg viewBox="0 0 24 24" width="34" height="34" fill="#fff"><path d="M8 5v14l11-7z"/></svg></div>' : "");
 
       const label = document.createElement("div");
       label.className = "tile-label";
