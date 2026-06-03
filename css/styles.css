@@ -67,33 +67,81 @@ body {
 .day-btn:active { transform: scale(.96); }
 .draft .day-btn { background: #b9a8de; }
 
-/* ===================== PLAYER ===================== */
-.container {
-  display: flex; justify-content: center; align-items: center;
-  height: 100vh; padding: 20px; position: relative; overflow: hidden;
-}
-.practice-view { width: 100%; height: 100%; position: relative; }
-.practice-content {
-  width: 100%; height: 100%;
-  display: flex; justify-content: center; align-items: center; position: relative;
-}
+/* ===================== LESSON HUB ===================== */
+.hub-view { max-width: 1000px; margin: 0 auto; padding: 80px 24px 60px; }
+.lesson-head { display: flex; align-items: center; margin: 0 0 36px 60px; }
+.lesson-head h1 { font-size: 38px; font-weight: 800; color: #2c3e50; }
 
-.topbar {
-  position: absolute; top: 18px; left: 0; right: 0;
-  display: flex; flex-direction: column; align-items: center; gap: 10px;
-  pointer-events: none; z-index: 5;
+.tile-grid {
+  display: grid; grid-template-columns: repeat(4, 1fr); gap: 22px;
+  align-items: start;
 }
-.day-title { font-size: 15px; font-weight: 700; color: #95a5a6; letter-spacing: .04em; }
-.breadcrumb { display: flex; gap: 8px; flex-wrap: wrap; justify-content: center; }
-.crumb {
-  font-size: 13px; font-weight: 700; padding: 5px 12px; border-radius: 999px;
-  background: #fff; color: #b0b0b0; border: 1px solid rgba(0,0,0,.06);
-  font-family: 'Mulish', sans-serif; cursor: pointer; pointer-events: auto;
-  transition: background .15s ease, color .15s ease;
+.tile {
+  position: relative; display: flex; flex-direction: column; align-items: center; gap: 12px;
+  background: none; border: none; padding: 6px; cursor: pointer;
+  font-family: 'Mulish', sans-serif; -webkit-tap-highlight-color: transparent;
+  transition: transform .15s ease;
 }
-.crumb:hover { background: #f1ecfb; color: #6c3fc5; }
-.crumb.done { color: #6c3fc5; background: #f1ecfb; }
-.crumb.current { color: #fff; background: #6c3fc5; }
+.tile-card {
+  position: relative; width: 100%; aspect-ratio: 1 / 1.08; border-radius: 28px;
+  display: flex; align-items: center; justify-content: center;
+  box-shadow: 0 8px 20px rgba(0,0,0,.12); overflow: visible;
+}
+.mascot { width: 60%; height: 60%; filter: drop-shadow(0 3px 4px rgba(0,0,0,.12)); }
+.mascot.bob { animation: mascot-bob 1.6s ease-in-out infinite; }
+@keyframes mascot-bob { 0%,100% { transform: translateY(0);} 50% { transform: translateY(-7px);} }
+
+.tile-badge {
+  position: absolute; bottom: -10px; right: -6px; width: 46px; height: 46px;
+  border-radius: 50%; background: #fff; display: flex; align-items: center; justify-content: center;
+  font-size: 24px; box-shadow: 0 3px 8px rgba(0,0,0,.16);
+}
+.tile-star {
+  position: absolute; top: -16px; left: -10px; font-size: 46px;
+  filter: drop-shadow(0 2px 3px rgba(0,0,0,.25)); animation: star-pop .5s ease-out;
+}
+@keyframes star-pop { 0% { transform: scale(0) rotate(-40deg);} 70% { transform: scale(1.25);} 100% { transform: scale(1);} }
+.tile-lock {
+  position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);
+  width: 58px; height: 58px; border-radius: 50%; background: rgba(255,255,255,.92);
+  display: flex; align-items: center; justify-content: center; font-size: 30px;
+  box-shadow: 0 2px 8px rgba(0,0,0,.12);
+}
+.tile-play {
+  position: absolute; bottom: 12px; left: 50%; transform: translateX(-50%);
+  width: 56px; height: 56px; border-radius: 50%;
+  background: rgba(255,255,255,.28); display: flex; align-items: center; justify-content: center;
+  box-shadow: 0 3px 8px rgba(0,0,0,.18); padding-left: 4px;
+}
+.tile-label { font-size: 18px; font-weight: 800; text-align: center; }
+
+/* states */
+.tile.locked { cursor: default; }
+.tile.locked .tile-card { box-shadow: 0 4px 10px rgba(0,0,0,.06); }
+.tile.locked .tile-card::before {
+  content: ""; position: absolute; inset: 0; border-radius: inherit;
+  background: rgba(236,233,242,.7);
+}
+.tile.locked .mascot { filter: grayscale(.9); opacity: .5; }
+.tile.locked .tile-badge { filter: grayscale(.9); opacity: .6; }
+.tile.locked .tile-label { color: #b6b1c2 !important; }
+.tile.done .tile-card { box-shadow: 0 5px 14px rgba(0,0,0,.1); }
+.tile.active { transform: scale(1.12); }
+.tile.active .tile-card { box-shadow: 0 14px 34px rgba(0,0,0,.22); }
+.tile.active .tile-label { font-size: 20px; }
+.tile:not(.locked):not(.active):hover { transform: translateY(-4px); }
+.tile.active:hover { transform: scale(1.16); }
+
+/* ===================== ACTIVITY (reading) ===================== */
+.activity-view {
+  position: fixed; inset: 0; background: #e8e0f0;
+  display: flex; justify-content: center; align-items: center; overflow: hidden;
+}
+.activity-title {
+  position: absolute; top: 22px; left: 0; right: 0; text-align: center;
+  font-size: 18px; font-weight: 800; color: #8e7bb5; pointer-events: none; z-index: 5;
+}
+.practice-content { width: 100%; height: 100%; display: flex; justify-content: center; align-items: center; position: relative; }
 
 .word-area {
   display: flex; flex-direction: column; align-items: center; gap: 18px;
@@ -166,10 +214,26 @@ body {
 }
 .back-btn:hover { background: #f8f8f8; box-shadow: 0 2px 8px rgba(0,0,0,.1); }
 
+/* ===================== SECTION TRANSITION ===================== */
+.transition {
+  position: fixed; inset: 0; z-index: 200; overflow: hidden;
+  display: flex; align-items: center; justify-content: center;
+  opacity: 0; pointer-events: none; transition: opacity .25s ease;
+}
+.transition.show { opacity: 1; pointer-events: auto; }
+.transition-star { font-size: 150px; transform: scale(0); filter: drop-shadow(0 6px 10px rgba(0,0,0,.2)); }
+.transition.show .transition-star { animation: trans-star 1s ease-out forwards; }
+@keyframes trans-star {
+  0% { transform: scale(0) rotate(-30deg); }
+  55% { transform: scale(1.25) rotate(12deg); }
+  100% { transform: scale(1) rotate(0deg); }
+}
+
 /* ===================== PRESENT ===================== */
 .present-container {
-  position: absolute; top: 0; left: 0; width: 100%; height: 100%;
-  display: none; justify-content: center; align-items: center; z-index: 100;
+  position: fixed; inset: 0;
+  display: none; justify-content: center; align-items: center; z-index: 150;
+  background: rgba(232,224,240,.96);
 }
 .present-container.show { display: flex; }
 .present { position: relative; cursor: pointer; transform: scale(0); animation: present-appear .5s ease-out forwards; }
@@ -213,10 +277,14 @@ body {
 /* ===================== RESPONSIVE ===================== */
 @media (max-width: 768px) {
   .word { letter-spacing: 26px; padding-left: 26px; }
-  .arrow { width: 110px; height: 110px; }
+  .arrow { width: 96px; height: 96px; }
   .nav-btn { width: 60px; height: 60px; right: 18px; }
   .dots-container { left: 16px; gap: 9px; }
-  .back-btn, .big-mode-btn { width: 42px; height: 42px; padding: 9px; }
-  .big-mode-btn { bottom: 20px; right: 18px; }
+  .back-btn { width: 42px; height: 42px; padding: 9px; }
   .index-page h1 { font-size: 34px; }
+  .hub-view { padding: 70px 18px 50px; }
+  .lesson-head { margin-left: 52px; }
+  .lesson-head h1 { font-size: 28px; }
+  .tile-grid { grid-template-columns: repeat(2, 1fr); gap: 18px; }
+  .tile-label { font-size: 16px; }
 }

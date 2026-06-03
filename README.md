@@ -11,14 +11,20 @@ on one **digraph** and three new **sight words**. Every day the child:
 
 Words and sentences are read using the draggable **arrow** that highlights
 letters as it sweeps across (the same mechanic as the reading game on
-robert.github.com). Finishing a day opens a **present** with confetti. 🎁
+robert.github.com).
+
+Each day opens on a **lesson hub**: a row of tiles (the four sections), each
+with a cute mascot. Tiles unlock in order — the next one to do is bigger and
+shows a play icon. Finishing a section earns a **star**, plays a quick
+pastel-screen + confetti + jingle transition, and unlocks the next tile.
+Finishing all four opens a **present** with confetti. 🎁
 
 ## Using it
 
 - Open `index.html`, pick a week, then pick a day (1–6).
-- The size button (bottom-right) cycles big / small text.
+- On the lesson hub, tap the highlighted tile to start that section.
 - Drag the arrow under the word to read along; tap the down/up chevrons to
-  move to the next/previous card.
+  move to the next/previous card. The back arrow returns to the hub.
 
 ## Files
 
