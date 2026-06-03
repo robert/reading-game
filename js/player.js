@@ -228,7 +228,9 @@ document.addEventListener("DOMContentLoaded", function () {
   function fitAll() {
     const type = currentCard().type;
     const bases = { digraph: 150, word: 120, sight: 120, sentence: 64 };
-    const maxWidth = Math.min(window.innerWidth * 0.86, 1100);
+    // when lines sit side by side, each gets a share of the width
+    const gaps = (lines.length - 1) * 90;
+    const maxWidth = (Math.min(window.innerWidth * 0.86, 1100) - gaps) / lines.length;
     lines.forEach(obj => {
       let size = bases[type];
       obj.word.style.fontSize = size + "px";
