@@ -1,14 +1,15 @@
 /*
  * PLAYER
  * ======
- * Each day opens on a LESSON HUB: a grid of tiles (the day's sections), each
- * with a cute mascot. Tiles unlock in order. Tapping the active tile (bigger,
- * with a play icon) opens the reading activity for that section, where cards
- * (sounds / words / sight words / sentences) are read with the draggable arrow.
+ * Each day opens on a LESSON HUB: numbered tiles (the day's sections), each
+ * with a cute mascot. Tiles unlock in order; the next one to do is bigger with
+ * a play icon. Tapping it opens the reading activity, where cards are read with
+ * the draggable arrow. The sound-review cards show the sound twice, each with
+ * its own dragger bar.
  *
- * Finishing a section earns a STAR, plays a short pastel + confetti + jingle
- * transition, and unlocks the next tile. Finishing every section opens the
- * present at the end of the day.
+ * Finishing a section (the last card's button is a tick) earns a STAR, plays a
+ * pastel + confetti + "Good job!" + jingle transition, and unlocks the next
+ * tile. Finishing every section opens the present.
  */
 
 document.addEventListener("DOMContentLoaded", function () {
@@ -24,43 +25,57 @@ document.addEventListener("DOMContentLoaded", function () {
 
   // ---- per-section tile theming ----
   const THEMES = {
-    "This week's sound":   { grad: ["#5ad1cb", "#36b3ac"], label: "#1f7d77", emoji: "🔊" },
-    "Sight words":         { grad: ["#9a8cff", "#7a68f0"], label: "#5a44c9", emoji: "👀" },
-    "Read the words":      { grad: ["#ff8d6b", "#ff6f54"], label: "#d2532f", emoji: "🧩" },
-    "Read the sentences":  { grad: ["#ff8fb6", "#ff6d9c"], label: "#cf4f79", emoji: "📖" }
+    "Sound Review":     { grad: ["#5ad1cb", "#36b3ac"], label: "#1f7d77" },
+    "Sight Words":      { grad: ["#9a8cff", "#7a68f0"], label: "#5a44c9" },
+    "Word Reading":     { grad: ["#ff8d6b", "#ff6f54"], label: "#d2532f" },
+    "Sentence Reading": { grad: ["#ff8fb6", "#ff6d9c"], label: "#cf4f79" }
   };
-  const FALLBACK = { grad: ["#7fb2ff", "#5a8df0"], label: "#3a6bcf", emoji: "⭐" };
+  const FALLBACK = { grad: ["#7fb2ff", "#5a8df0"], label: "#3a6bcf" };
   const themeFor = s => THEMES[s.label] || FALLBACK;
 
-  function mascot(animate) {
-    return (
-      '<svg class="mascot' + (animate ? " bob" : "") + '" viewBox="0 0 120 120" aria-hidden="true">' +
-      '<path d="M60 8 C90 8 108 30 108 60 C108 95 88 113 60 113 C32 113 12 95 12 60 C12 30 30 8 60 8 Z" fill="#ffffff"/>' +
-      '<ellipse cx="38" cy="80" rx="9" ry="6" fill="#ffb3c7"/>' +
-      '<ellipse cx="82" cy="80" rx="9" ry="6" fill="#ffb3c7"/>' +
-      '<circle cx="45" cy="58" r="10" fill="#2c3e50"/>' +
-      '<circle cx="75" cy="58" r="10" fill="#2c3e50"/>' +
-      '<circle cx="48" cy="55" r="3" fill="#fff"/>' +
-      '<circle cx="78" cy="55" r="3" fill="#fff"/>' +
-      '<path d="M48 78 Q60 90 72 78" stroke="#2c3e50" stroke-width="4" fill="none" stroke-linecap="round"/>' +
-      "</svg>"
-    );
+  // Four distinct but matching cute mascots (white bodies, pink cheeks).
+  function mascot(i) {
+    const body = '<path d="M60 14 C88 14 106 34 106 62 C106 94 88 110 60 110 C32 110 14 94 14 62 C14 34 32 14 60 14 Z" fill="#fff"/>';
+    const cheeks = '<ellipse cx="39" cy="78" rx="8" ry="5.5" fill="#ffb3c7"/><ellipse cx="81" cy="78" rx="8" ry="5.5" fill="#ffb3c7"/>';
+    const eyes = '<circle cx="46" cy="58" r="9" fill="#2c3e50"/><circle cx="74" cy="58" r="9" fill="#2c3e50"/><circle cx="49" cy="55" r="2.7" fill="#fff"/><circle cx="77" cy="55" r="2.7" fill="#fff"/>';
+    const smile = '<path d="M49 76 Q60 88 71 76" stroke="#2c3e50" stroke-width="4" fill="none" stroke-linecap="round"/>';
+    const grin = '<path d="M47 74 Q60 91 73 74" stroke="#2c3e50" stroke-width="4" fill="none" stroke-linecap="round"/>';
+    const openMouth = '<path d="M50 74 Q60 87 70 74 Z" fill="#2c3e50"/>';
+
+    const variants = [
+      // 0: round with a little bobble on top
+      '<circle cx="60" cy="9" r="5.5" fill="#fff"/>' + body + eyes + cheeks + smile,
+      // 1: cat ears
+      '<path d="M28 30 L24 5 L49 22 Z" fill="#fff"/><path d="M92 30 L96 5 L71 22 Z" fill="#fff"/>' + body + eyes + cheeks + grin,
+      // 2: bunny ears
+      '<ellipse cx="47" cy="15" rx="8" ry="24" fill="#fff"/><ellipse cx="73" cy="15" rx="8" ry="24" fill="#fff"/>' +
+      '<ellipse cx="47" cy="17" rx="3.4" ry="16" fill="#ffd0dd"/><ellipse cx="73" cy="17" rx="3.4" ry="16" fill="#ffd0dd"/>' + body + eyes + cheeks + smile,
+      // 3: bear ears with an open happy mouth
+      '<circle cx="33" cy="27" r="13" fill="#fff"/><circle cx="87" cy="27" r="13" fill="#fff"/>' + body + eyes + cheeks + openMouth
+    ];
+    return '<svg class="mascot" viewBox="0 0 120 120" aria-hidden="true">' + variants[i % variants.length] + "</svg>";
   }
+
+  const ARROW_INNER =
+    '<div class="arrow-hitbox"></div>' +
+    '<svg viewBox="0 0 100 100" preserveAspectRatio="xMidYMid meet">' +
+    '<path d="M 50 15 Q 52 17 54 20 L 70 36 Q 73 39 75 40 L 82 47 Q 85 50 85 55 L 85 85 Q 85 90 80 90 L 20 90 Q 15 90 15 85 L 15 55 Q 15 50 18 47 L 25 40 Q 27 39 30 36 L 46 20 Q 48 17 50 15 Z" fill="currentColor"/>' +
+    '<line x1="35" y1="45" x2="35" y2="75" stroke="black" stroke-width="2" opacity="0.3"/>' +
+    '<line x1="50" y1="35" x2="50" y2="75" stroke="black" stroke-width="2" opacity="0.3"/>' +
+    '<line x1="65" y1="45" x2="65" y2="75" stroke="black" stroke-width="2" opacity="0.3"/>' +
+    "</svg>";
+
+  const DOWN_SVG = '<svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="7 10 12 15 17 10"></polyline></svg>';
+  const UP_SVG = '<svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="7 14 12 9 17 14"></polyline></svg>';
+  const TICK_SVG = '<svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>';
 
   // ---- elements ----
   const hubView = document.getElementById("hubView");
-  const lessonTitle = document.getElementById("lessonTitle");
   const tileGrid = document.getElementById("tileGrid");
   const activityView = document.getElementById("activityView");
   const activityBack = document.getElementById("activityBack");
-  const activityTitle = document.getElementById("activityTitle");
-  const cardNote = document.getElementById("cardNote");
-  const wordElement = document.getElementById("word");
-  const wordArea = document.getElementById("wordArea");
+  const readingLines = document.getElementById("readingLines");
   const dotsContainer = document.getElementById("dotsContainer");
-  const arrowElement = document.getElementById("arrow");
-  const arrowTrack = document.querySelector(".arrow-track");
-  const progressFill = document.getElementById("progressFill");
   const nextBtn = document.getElementById("nextBtn");
   const prevBtn = document.getElementById("prevBtn");
   const transition = document.getElementById("transition");
@@ -69,25 +84,17 @@ document.addEventListener("DOMContentLoaded", function () {
   const present = document.getElementById("present");
   const prize = document.getElementById("prize");
   const confettiContainer = document.getElementById("confettiContainer");
-  const playAgainBtn = document.getElementById("playAgainBtn");
-  const nextDayBtn = document.getElementById("nextDayBtn");
+
+  prevBtn.innerHTML = UP_SVG;
+  nextBtn.innerHTML = DOWN_SVG;
 
   // ---- state ----
   const completed = sections.map(() => false);
   let sectionIndex = 0;
   let cardIndex = 0;
+  let lines = [];          // current card's reading lines
   let isDragging = false;
-  let arrowOffset = 0;
-
-  lessonTitle.textContent = "Week " + built.week.n + " · " + built.week.digraph + " · Day " + dayN;
-  const lastDay = built.days.length;
-  if (dayN < lastDay) {
-    nextDayBtn.href = "player.html?week=" + weekN + "&day=" + (dayN + 1);
-    nextDayBtn.textContent = "Next day";
-  } else {
-    nextDayBtn.href = "index.html";
-    nextDayBtn.textContent = "Back to weeks";
-  }
+  let current = null;      // line being dragged
 
   // ================= HUB =================
   const activeIndex = () => completed.findIndex(c => !c); // -1 when all done
@@ -109,8 +116,8 @@ document.addEventListener("DOMContentLoaded", function () {
       card.className = "tile-card";
       card.style.background = "linear-gradient(150deg," + theme.grad[0] + " 0%," + theme.grad[1] + " 100%)";
       card.innerHTML =
-        mascot(isActive) +
-        '<div class="tile-badge">' + theme.emoji + "</div>" +
+        mascot(i) +
+        '<div class="tile-num">' + (i + 1) + "</div>" +
         (done ? '<div class="tile-star">⭐</div>' : "") +
         (isActive ? '<div class="tile-play"><svg viewBox="0 0 24 24" width="34" height="34" fill="#fff"><path d="M8 5v14l11-7z"/></svg></div>' : "") +
         (locked ? '<div class="tile-lock">🔒</div>' : "");
@@ -129,6 +136,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
   function showHub() {
     activityView.style.display = "none";
+    presentContainer.classList.remove("show");
     hubView.style.display = "block";
     renderHub();
   }
@@ -139,7 +147,6 @@ document.addEventListener("DOMContentLoaded", function () {
     cardIndex = 0;
     hubView.style.display = "none";
     activityView.style.display = "flex";
-    activityTitle.textContent = sections[i].label;
     initDots();
     displayCard();
   }
@@ -165,48 +172,80 @@ document.addEventListener("DOMContentLoaded", function () {
 
   const currentCard = () => sections[sectionIndex].cards[cardIndex];
 
-  function fitText() {
-    const card = currentCard();
-    wordArea.classList.remove("type-digraph", "type-word", "type-sight", "type-sentence");
-    wordArea.classList.add("type-" + card.type);
-    const bases = { digraph: 200, word: 120, sight: 120, sentence: 64 };
-    let size = bases[card.type];
-    wordElement.style.fontSize = size + "px";
-    const maxWidth = Math.min(window.innerWidth * 0.86, 1100);
-    let guard = 0;
-    while (wordElement.scrollWidth > maxWidth && size > 18 && guard < 200) {
-      size -= 4; wordElement.style.fontSize = size + "px"; guard++;
+  function buildLine(text) {
+    const line = document.createElement("div");
+    line.className = "reading-line";
+
+    const word = document.createElement("div");
+    word.className = "word";
+    for (let i = 0; i < text.length; i++) {
+      const span = document.createElement("span");
+      span.textContent = text[i];
+      if (text[i] === " ") span.classList.add("space");
+      word.appendChild(span);
     }
-    arrowTrack.style.width = Math.round(wordElement.getBoundingClientRect().width) + "px";
+
+    const track = document.createElement("div");
+    track.className = "arrow-track";
+    const fill = document.createElement("div");
+    fill.className = "progress-fill";
+    track.appendChild(fill);
+
+    const arrow = document.createElement("div");
+    arrow.className = "arrow";
+    arrow.innerHTML = ARROW_INNER;
+
+    line.appendChild(word);
+    line.appendChild(track);
+    line.appendChild(arrow);
+
+    const obj = { line, word, track, fill, arrow };
+    arrow.addEventListener("mousedown", e => startDrag(e, obj));
+    arrow.addEventListener("touchstart", e => startDrag(e, obj), { passive: false });
+    return obj;
   }
 
   function displayCard() {
     const card = currentCard();
-    cardNote.textContent = card.note || "";
-    wordElement.innerHTML = "";
-    for (let i = 0; i < card.text.length; i++) {
-      const span = document.createElement("span");
-      span.textContent = card.text[i];
-      if (card.text[i] === " ") span.classList.add("space");
-      wordElement.appendChild(span);
+    readingLines.className = "reading-lines type-" + card.type;
+    readingLines.innerHTML = "";
+    lines = [];
+    const copies = card.type === "digraph" ? 2 : 1; // sound shows twice
+    for (let i = 0; i < copies; i++) {
+      const obj = buildLine(card.text);
+      lines.push(obj);
+      readingLines.appendChild(obj.line);
     }
-    fitText();
+    fitAll();
     updateDots();
-    resetArrow();
+
     prevBtn.classList.toggle("disabled", cardIndex === 0);
+    const isLast = cardIndex === sections[sectionIndex].cards.length - 1;
+    nextBtn.innerHTML = isLast ? TICK_SVG : DOWN_SVG;
+    nextBtn.classList.toggle("finish", isLast);
   }
 
-  function resetArrow() {
-    arrowOffset = 0;
-    arrowElement.style.left = "0px";
-    progressFill.style.width = "0px";
-    wordElement.querySelectorAll("span").forEach(l => l.classList.remove("highlighted"));
+  function fitAll() {
+    const type = currentCard().type;
+    const bases = { digraph: 150, word: 120, sight: 120, sentence: 64 };
+    const maxWidth = Math.min(window.innerWidth * 0.86, 1100);
+    lines.forEach(obj => {
+      let size = bases[type];
+      obj.word.style.fontSize = size + "px";
+      let guard = 0;
+      while (obj.word.scrollWidth > maxWidth && size > 18 && guard < 200) {
+        size -= 4; obj.word.style.fontSize = size + "px"; guard++;
+      }
+      obj.track.style.width = Math.round(obj.word.getBoundingClientRect().width) + "px";
+      obj.arrow.style.left = "0px";
+      obj.fill.style.width = "0px";
+    });
   }
 
-  function updateHighlighting() {
-    const arrowRect = arrowElement.getBoundingClientRect();
+  function highlight(obj) {
+    const arrowRect = obj.arrow.getBoundingClientRect();
     const arrowCenter = arrowRect.left + arrowRect.width / 2;
-    wordElement.querySelectorAll("span").forEach(letter => {
+    obj.word.querySelectorAll("span").forEach(letter => {
       const r = letter.getBoundingClientRect();
       if (arrowCenter >= r.left) letter.classList.add("highlighted");
       else letter.classList.remove("highlighted");
@@ -231,24 +270,24 @@ document.addEventListener("DOMContentLoaded", function () {
     const theme = themeFor(sections[sectionIndex]);
     activityView.style.display = "none";
     playTransition(theme.grad[0], function () {
-      if (completed.every(Boolean)) { showHub(); showPresent(); }
-      else showHub();
+      showHub();
+      if (completed.every(Boolean)) showPresent();
     });
   }
 
   function playTransition(pastel, done) {
     transition.style.background = pastel;
     transition.classList.add("show");
-    spawnConfetti(transitionConfetti, 40);
+    spawnConfetti(transitionConfetti, 70);
     playJingle();
     setTimeout(function () {
       transition.classList.remove("show");
-      setTimeout(() => { transitionConfetti.innerHTML = ""; }, 300);
+      setTimeout(() => { transitionConfetti.innerHTML = ""; }, 400);
       if (done) done();
-    }, 1600);
+    }, 3200); // ~2x longer
   }
 
-  // ---- short happy jingle via Web Audio (no asset files) ----
+  // ---- happy jingle via Web Audio (no asset files) ----
   let audioCtx = null;
   function playJingle() {
     try {
@@ -258,18 +297,27 @@ document.addEventListener("DOMContentLoaded", function () {
       const ctx = audioCtx;
       if (ctx.state === "suspended") ctx.resume();
       const now = ctx.currentTime;
-      const notes = [523.25, 659.25, 783.99, 1046.5]; // C5 E5 G5 C6
-      notes.forEach((f, i) => {
-        const o = ctx.createOscillator();
-        const g = ctx.createGain();
-        o.type = "triangle";
-        o.frequency.value = f;
-        const t = now + i * 0.1;
-        g.gain.setValueAtTime(0.0001, t);
-        g.gain.linearRampToValueAtTime(0.25, t + 0.02);
-        g.gain.exponentialRampToValueAtTime(0.0001, t + 0.25);
-        o.connect(g); g.connect(ctx.destination);
-        o.start(t); o.stop(t + 0.28);
+      // bright rising major run, ending high and held
+      const seq = [
+        { f: 523.25, t: 0.00, d: 0.16 }, // C5
+        { f: 659.25, t: 0.10, d: 0.16 }, // E5
+        { f: 783.99, t: 0.20, d: 0.16 }, // G5
+        { f: 1046.50, t: 0.30, d: 0.18 }, // C6
+        { f: 1318.51, t: 0.42, d: 0.34 }  // E6 (held)
+      ];
+      seq.forEach(n => {
+        const t = now + n.t;
+        [["triangle", 0.22], ["sine", 0.10]].forEach(([type, vol]) => {
+          const o = ctx.createOscillator();
+          const g = ctx.createGain();
+          o.type = type;
+          o.frequency.value = n.f;
+          g.gain.setValueAtTime(0.0001, t);
+          g.gain.linearRampToValueAtTime(vol, t + 0.02);
+          g.gain.exponentialRampToValueAtTime(0.0001, t + n.d);
+          o.connect(g); g.connect(ctx.destination);
+          o.start(t); o.stop(t + n.d + 0.05);
+        });
       });
     } catch (e) { /* audio not available */ }
   }
@@ -281,16 +329,14 @@ document.addEventListener("DOMContentLoaded", function () {
       c.className = "confetti";
       c.style.left = Math.random() * 100 + "%";
       c.style.background = colors[Math.floor(Math.random() * colors.length)];
-      c.style.animationDelay = Math.random() * 0.6 + "s";
-      c.style.animationDuration = (Math.random() * 1.2 + 1.4) + "s";
+      c.style.animationDelay = Math.random() * 0.8 + "s";
+      c.style.animationDuration = (Math.random() * 1.4 + 1.8) + "s";
       container.appendChild(c);
     }
   }
 
   // ================= PRESENT (day complete) =================
-  function showPresent() {
-    presentContainer.classList.add("show");
-  }
+  function showPresent() { presentContainer.classList.add("show"); }
   function createPresentConfetti() {
     spawnConfetti(confettiContainer, 60);
     const prizeEmojis = ["🚂", "🤩", "🦸", "🏎️", "🚒", "🎤", "🗡️", "🚜", "🏓", "🍪", "🍩", "🍎", "🦉", "👻", "🐶", "🦖", "🚀", "⭐", "🐙", "🦄"];
@@ -304,37 +350,30 @@ document.addEventListener("DOMContentLoaded", function () {
     document.querySelector(".prize-emoji").textContent = selected.join(" ");
     setTimeout(() => { present.style.display = "none"; prize.classList.add("show"); }, 500);
   }
-  function resetDay() {
-    for (let i = 0; i < completed.length; i++) completed[i] = false;
-    presentContainer.classList.remove("show");
-    prize.classList.remove("show");
-    present.classList.remove("opened");
-    present.style.display = "block";
-    confettiContainer.innerHTML = "";
-    showHub();
-  }
 
-  // ---- drag ----
-  function startDrag(e) {
+  // ---- drag (per line) ----
+  function startDrag(e, obj) {
     if (e.target.closest(".nav-btn") || e.target.closest(".back-btn")) return;
     isDragging = true;
-    arrowElement.classList.add("dragging");
+    current = obj;
+    obj.arrow.classList.add("dragging");
     e.preventDefault();
   }
   function drag(e) {
-    if (!isDragging) return;
+    if (!isDragging || !current) return;
     const touch = e.touches ? e.touches[0] : e;
-    const trackRect = arrowTrack.getBoundingClientRect();
-    arrowOffset = Math.min(Math.max(touch.clientX - trackRect.left, 0), trackRect.width);
-    arrowElement.style.left = arrowOffset + "px";
-    progressFill.style.width = arrowOffset + "px";
-    updateHighlighting();
+    const trackRect = current.track.getBoundingClientRect();
+    const offset = Math.min(Math.max(touch.clientX - trackRect.left, 0), trackRect.width);
+    current.arrow.style.left = offset + "px";
+    current.fill.style.width = offset + "px";
+    highlight(current);
     e.preventDefault();
   }
   function endDrag(e) {
     if (!isDragging) return;
     isDragging = false;
-    arrowElement.classList.remove("dragging");
+    if (current) current.arrow.classList.remove("dragging");
+    current = null;
     if (e.cancelable) e.preventDefault();
   }
 
@@ -345,15 +384,12 @@ document.addEventListener("DOMContentLoaded", function () {
   present.onclick = function () {
     if (!present.classList.contains("opened")) { present.classList.add("opened"); createPresentConfetti(); }
   };
-  playAgainBtn.onclick = resetDay;
 
-  arrowElement.addEventListener("mousedown", startDrag);
-  arrowElement.addEventListener("touchstart", startDrag, { passive: false });
   document.addEventListener("mousemove", drag);
   document.addEventListener("touchmove", drag, { passive: false });
   document.addEventListener("mouseup", endDrag);
   document.addEventListener("touchend", endDrag, { passive: false });
-  window.addEventListener("resize", function () { if (activityView.style.display !== "none") fitText(); });
+  window.addEventListener("resize", function () { if (activityView.style.display !== "none") fitAll(); });
 
   // ---- go ----
   showHub();

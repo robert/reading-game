@@ -148,18 +148,10 @@ function buildWeek(n) {
   for (let d = 0; d < days; d++) {
     const dayRng = makeRng(n * 1000 + d);
 
-    // --- Section 1: sound recap (just repeat the sound a few times) ---
-    const soundCards = [];
-    const thisNote = week.status === "review" ? "this week (review)" : "this week";
-    for (let r = 0; r < 2; r++) {
-      soundCards.push({ text: week.digraph, type: "digraph", note: r === 0 ? thisNote : "" });
-    }
+    // --- Section 1: sound (each card shows the sound twice, two draggers) ---
+    const soundCards = [{ text: week.digraph, type: "digraph" }];
     const recapWeek = recapDigraphFor(week, d);
-    if (recapWeek) {
-      for (let r = 0; r < 2; r++) {
-        soundCards.push({ text: recapWeek.digraph, type: "digraph", note: r === 0 ? "remember this one?" : "" });
-      }
-    }
+    if (recapWeek) soundCards.push({ text: recapWeek.digraph, type: "digraph" });
 
     // --- Section 2: sight words ---
     const introducedCount = Math.min(week.sightWords.length, d + 1);
@@ -192,11 +184,11 @@ function buildWeek(n) {
     const daySentences = sentenceDeal[d].map(t => ({ text: t, type: "sentence" }));
 
     const sections = [
-      { label: "This week's sound", cards: soundCards },
-      { label: "Sight words", cards: sightCards }
+      { label: "Sound Review", cards: soundCards },
+      { label: "Sight Words", cards: sightCards }
     ];
-    if (dayWords.length) sections.push({ label: "Read the words", cards: dayWords });
-    if (daySentences.length) sections.push({ label: "Read the sentences", cards: daySentences });
+    if (dayWords.length) sections.push({ label: "Word Reading", cards: dayWords });
+    if (daySentences.length) sections.push({ label: "Sentence Reading", cards: daySentences });
 
     result.push({ day: d + 1, sections });
   }

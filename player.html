@@ -16,9 +16,6 @@
                 <polyline points="12 19 5 12 12 5"></polyline>
             </svg>
         </a>
-        <div class="lesson-head">
-            <h1 id="lessonTitle"></h1>
-        </div>
         <div class="tile-grid" id="tileGrid"></div>
     </div>
 
@@ -30,42 +27,18 @@
                 <polyline points="12 19 5 12 12 5"></polyline>
             </svg>
         </button>
-        <div class="activity-title" id="activityTitle"></div>
         <div class="practice-content">
             <div class="dots-container" id="dotsContainer"></div>
-            <div class="word-area" id="wordArea">
-                <div class="card-note" id="cardNote"></div>
-                <div class="word" id="word"></div>
-                <div class="arrow-track">
-                    <div class="progress-fill" id="progressFill"></div>
-                </div>
-                <div class="arrow" id="arrow">
-                    <div class="arrow-hitbox"></div>
-                    <svg viewBox="0 0 100 100" preserveAspectRatio="xMidYMid meet">
-                        <path d="M 50 15 Q 52 17 54 20 L 70 36 Q 73 39 75 40 L 82 47 Q 85 50 85 55 L 85 85 Q 85 90 80 90 L 20 90 Q 15 90 15 85 L 15 55 Q 15 50 18 47 L 25 40 Q 27 39 30 36 L 46 20 Q 48 17 50 15 Z" fill="currentColor"/>
-                        <line x1="35" y1="45" x2="35" y2="75" stroke="black" stroke-width="2" opacity="0.3"/>
-                        <line x1="50" y1="35" x2="50" y2="75" stroke="black" stroke-width="2" opacity="0.3"/>
-                        <line x1="65" y1="45" x2="65" y2="75" stroke="black" stroke-width="2" opacity="0.3"/>
-                    </svg>
-                </div>
-            </div>
-            <button class="nav-btn prev-btn" id="prevBtn">
-                <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
-                    <polyline points="7 14 12 9 17 14"></polyline>
-                </svg>
-            </button>
-            <button class="nav-btn next-btn" id="nextBtn">
-                <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
-                    <polyline points="7 10 12 15 17 10"></polyline>
-                </svg>
-            </button>
+            <div class="reading-lines" id="readingLines"></div>
+            <button class="nav-btn prev-btn" id="prevBtn"></button>
+            <button class="nav-btn next-btn" id="nextBtn"></button>
         </div>
     </div>
 
     <!-- ===== SECTION-COMPLETE TRANSITION ===== -->
     <div class="transition" id="transition">
         <div class="confetti-container" id="transitionConfetti"></div>
-        <div class="transition-star">⭐</div>
+        <div class="transition-text">Good job!</div>
     </div>
 
     <!-- ===== DAY-COMPLETE PRESENT ===== -->
@@ -79,8 +52,7 @@
             <div class="prize-emoji">🏆</div>
             <div class="prize-text">Great Job!</div>
             <div class="prize-buttons">
-                <button class="play-again-btn" id="playAgainBtn">Do it again</button>
-                <a class="play-again-btn secondary" id="nextDayBtn" href="#">Next day</a>
+                <a class="play-again-btn" href="index.html">Back to start</a>
             </div>
         </div>
     </div>
