@@ -86,12 +86,13 @@ function dealAcrossDays(bank, perDay, days, rng) {
 }
 
 // Pick the recap digraph week for a given day (rotates through last 3 weeks).
+// Weeks whose digraph matches this week's (review weeks) are skipped.
 function recapDigraphFor(week, dayIndex) {
   if (week.recapDigraphWeek) return weekByNumber(week.recapDigraphWeek);
   const priors = [];
   for (let back = 1; back <= 3; back++) {
     const w = weekByNumber(week.n - back);
-    if (w) priors.push(w);
+    if (w && w.digraph !== week.digraph) priors.push(w);
   }
   if (!priors.length) return null;
   return priors[dayIndex % priors.length];

@@ -68,73 +68,110 @@ const WEEKS = [
     ]
   },
 
-  // ===================== WEEK 2 =====================
+  // ===================== WEEK 2 (sh review) =====================
+  // Fresh sh words (no overlap with week 1's bank) for extra practice.
+  // No ch/th words in the sentences yet - they haven't been taught.
   {
     n: 2,
-    digraph: "ch",
-    status: "new",
-    examples: ["chip", "lunch"],
+    digraph: "sh",
+    status: "review",
+    examples: ["shrimp", "splash"],
     sightWords: ["me", "be", "was"],
     words: [
-      "chip", "chop", "chin", "chat", "chum", "chug", "chap", "chill",
-      "chomp", "chimp", "chess", "chest", "chick", "check", "much", "such",
-      "rich", "lunch", "bunch", "munch", "punch", "bench", "inch", "pinch",
-      "ranch", "champ", "chant", "chap"
+      "shack", "shaft", "shift", "shelf", "shot", "shred", "shrub", "shrug",
+      "shrimp", "shrink", "shrank", "slush", "flush", "plush", "swish", "splash",
+      "trash", "stash", "clash", "slash", "ash", "lash", "sash", "hash",
+      "rash", "shush"
     ],
     sentences: [
-      "I had chips for lunch.",
-      "The chick is on the chest.",
-      "He had a chat with me.",
-      "She had much fun.",
-      "We had a rich lunch.",
-      "I sat on the bench.",
-      "The chimp had a chip.",
-      "He had to chop the log.",
-      "She had a chip and a fish.",
-      "We had lunch at the shop.",
-      "The chick is in the shed.",
-      "It will be fun to chat.",
-      "He had a chest of cash.",
-      "She had a chat at lunch.",
-      "We had chips and fish.",
-      "The chimp sat on the bench.",
-      "I had a bunch of chips.",
-      "He was rich and had a shop."
+      "She was at the shop.",
+      "The shrimp was in the net.",
+      "We splash in the tub.",
+      "He was sad to shut the shed.",
+      "The slush was wet.",
+      "I will be at the shack.",
+      "She let me get a shell.",
+      "The cat sat on the shelf.",
+      "He had to stash the cash.",
+      "It was fun to splash and swish.",
+      "The trash was in the shed.",
+      "She will be posh in a red hat.",
+      "Help me shift the shelf.",
+      "The fish swam up to me.",
+      "I was in a rush to get the bus.",
+      "The bus was plush.",
+      "The fish is in the slush.",
+      "He did a swish and a splash."
     ]
   },
 
   // ===================== WEEK 3 =====================
   {
     n: 3,
+    digraph: "ch",
+    status: "new",
+    examples: ["chip", "lunch"],
+    sightWords: ["my", "you", "they"],
+    words: [
+      "chip", "chop", "chin", "chat", "chum", "chug", "chap", "chill",
+      "chomp", "chimp", "chess", "chest", "chick", "check", "much", "such",
+      "rich", "lunch", "bunch", "munch", "punch", "bench", "inch", "pinch",
+      "ranch", "champ", "chant"
+    ],
+    sentences: [
+      "I had chips for lunch.",
+      "The chick is on the chest.",
+      "He had a chat with me.",
+      "You and I had much fun.",
+      "They had a rich lunch.",
+      "I sat on the bench with my chum.",
+      "The chimp had my chip.",
+      "He had to chop the log.",
+      "She had a chip and a fish.",
+      "We had lunch at the shop.",
+      "The chick is in the shed.",
+      "It will be fun to chat with you.",
+      "He had a chest of cash.",
+      "They had a chat at lunch.",
+      "We had chips and fish.",
+      "The chimp sat on the bench.",
+      "You had a bunch of my chips.",
+      "He was rich and had a shop."
+    ]
+  },
+
+  // ===================== WEEK 4 =====================
+  {
+    n: 4,
     digraph: "th",
     status: "new",
     examples: ["this", "moth"],
-    sightWords: ["my", "you", "they"],
+    sightWords: ["her", "all", "are"],
     words: [
       "this", "that", "then", "them", "with", "thin", "thick", "thud",
       "moth", "bath", "path", "math", "cloth", "than", "thump", "thank",
       "thing", "think", "froth", "both", "thug", "thatch", "thrill", "throb",
-      "depth", "tenth", "moth", "with"
+      "depth", "tenth"
     ],
     sentences: [
       "This is my hat.",
       "That is a big moth.",
       "I had a bath with them.",
-      "The moth is thin.",
-      "We ran on the path.",
+      "All the moths are thin.",
+      "We all ran on the path.",
       "They had a chat.",
       "I think you had my fish.",
-      "She had a thick cloth.",
+      "Her cloth is thick.",
       "We had a bath then lunch.",
-      "This fish is for you.",
+      "This fish is for her.",
       "They had a moth in the shed.",
       "I think this is my chip.",
       "He had a thud on the path.",
-      "Both of them had lunch.",
+      "They are both at lunch.",
       "That moth is thin.",
       "They ran on the path with me.",
       "I think they had a bath.",
-      "This is my thick cloth."
+      "This is her thick cloth."
     ]
   },
 
@@ -144,21 +181,21 @@ const WEEKS = [
   // Sight words build on common high-frequency / tricky words.
   // These are DRAFTS: word banks and sentences are filled in after you
   // approve the order. Edit / reorder freely.
-  { n: 4,  digraph: "ng", status: "new", examples: ["ring", "song"],  sightWords: ["her", "all", "are"],        words: [], sentences: [], draft: true },
-  { n: 5,  digraph: "ck", status: "new", examples: ["duck", "sock"],  sightWords: ["said", "so", "have"],       words: [], sentences: [], draft: true },
-  { n: 6,  digraph: "ai", status: "new", examples: ["rain", "tail"],  sightWords: ["like", "some", "come"],     words: [], sentences: [], draft: true },
-  { n: 7,  digraph: "ee", status: "new", examples: ["feet", "tree"],  sightWords: ["were", "there", "little"],  words: [], sentences: [], draft: true },
-  { n: 8,  digraph: "igh",status: "new", examples: ["light", "high"], sightWords: ["one", "do", "when"],        words: [], sentences: [], draft: true },
-  { n: 9,  digraph: "oa", status: "new", examples: ["boat", "coat"],  sightWords: ["out", "what", "oh"],        words: [], sentences: [], draft: true },
-  { n: 10, digraph: "oo", status: "new", examples: ["moon", "book"],  sightWords: ["their", "people", "Mr"],    words: [], sentences: [], draft: true },
-  { n: 11, digraph: "ar", status: "new", examples: ["car", "star"],   sightWords: ["Mrs", "looked", "called"],  words: [], sentences: [], draft: true },
-  { n: 12, digraph: "or", status: "new", examples: ["fork", "corn"],  sightWords: ["asked", "could", "would"],  words: [], sentences: [], draft: true },
-  { n: 13, digraph: "ur", status: "new", examples: ["turn", "burn"],  sightWords: ["should", "your", "water"],  words: [], sentences: [], draft: true },
-  { n: 14, digraph: "ow", status: "new", examples: ["cow", "owl"],    sightWords: ["where", "who", "again"],     words: [], sentences: [], draft: true },
-  { n: 15, digraph: "oi", status: "new", examples: ["coin", "boil"],  sightWords: ["thought", "through", "work"],words: [], sentences: [], draft: true },
-  { n: 16, digraph: "ear",status: "new", examples: ["ear", "hear"],   sightWords: ["many", "laughed", "any"],    words: [], sentences: [], draft: true },
-  { n: 17, digraph: "air",status: "new", examples: ["hair", "chair"], sightWords: ["because", "different", "eyes"],words: [], sentences: [], draft: true },
-  { n: 18, digraph: "er", status: "new", examples: ["fern", "her"],   sightWords: ["friends", "once", "please"], words: [], sentences: [], draft: true }
+  { n: 5,  digraph: "ng", status: "new", examples: ["ring", "song"],  sightWords: ["said", "so", "have"],       words: [], sentences: [], draft: true },
+  { n: 6,  digraph: "ck", status: "new", examples: ["duck", "sock"],  sightWords: ["like", "some", "come"],     words: [], sentences: [], draft: true },
+  { n: 7,  digraph: "ai", status: "new", examples: ["rain", "tail"],  sightWords: ["were", "there", "little"],  words: [], sentences: [], draft: true },
+  { n: 8,  digraph: "ee", status: "new", examples: ["feet", "tree"],  sightWords: ["one", "do", "when"],        words: [], sentences: [], draft: true },
+  { n: 9,  digraph: "igh",status: "new", examples: ["light", "high"], sightWords: ["out", "what", "oh"],        words: [], sentences: [], draft: true },
+  { n: 10, digraph: "oa", status: "new", examples: ["boat", "coat"],  sightWords: ["their", "people", "Mr"],    words: [], sentences: [], draft: true },
+  { n: 11, digraph: "oo", status: "new", examples: ["moon", "book"],  sightWords: ["Mrs", "looked", "called"],  words: [], sentences: [], draft: true },
+  { n: 12, digraph: "ar", status: "new", examples: ["car", "star"],   sightWords: ["asked", "could", "would"],  words: [], sentences: [], draft: true },
+  { n: 13, digraph: "or", status: "new", examples: ["fork", "corn"],  sightWords: ["should", "your", "water"],  words: [], sentences: [], draft: true },
+  { n: 14, digraph: "ur", status: "new", examples: ["turn", "burn"],  sightWords: ["where", "who", "again"],    words: [], sentences: [], draft: true },
+  { n: 15, digraph: "ow", status: "new", examples: ["cow", "owl"],    sightWords: ["thought", "through", "work"],words: [], sentences: [], draft: true },
+  { n: 16, digraph: "oi", status: "new", examples: ["coin", "boil"],  sightWords: ["many", "laughed", "any"],    words: [], sentences: [], draft: true },
+  { n: 17, digraph: "ear",status: "new", examples: ["ear", "hear"],   sightWords: ["because", "different", "eyes"],words: [], sentences: [], draft: true },
+  { n: 18, digraph: "air",status: "new", examples: ["hair", "chair"], sightWords: ["friends", "once", "please"], words: [], sentences: [], draft: true },
+  { n: 19, digraph: "er", status: "new", examples: ["fern", "herb"],  sightWords: ["mouse", "want", "very"],     words: [], sentences: [], draft: true }
 ];
 
 // Number of practice days per week.

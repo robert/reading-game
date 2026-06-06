@@ -288,7 +288,7 @@ document.addEventListener("DOMContentLoaded", function () {
     }, 3200); // ~2x longer
   }
 
-  // ---- happy jingle via Web Audio (no asset files) ----
+  // ---- warm, happy jingle via Web Audio (no asset files) ----
   let audioCtx = null;
   function playJingle() {
     try {
@@ -298,27 +298,45 @@ document.addEventListener("DOMContentLoaded", function () {
       const ctx = audioCtx;
       if (ctx.state === "suspended") ctx.resume();
       const now = ctx.currentTime;
-      // bright rising major run, ending high and held
-      const seq = [
-        { f: 523.25, t: 0.00, d: 0.16 }, // C5
-        { f: 659.25, t: 0.10, d: 0.16 }, // E5
-        { f: 783.99, t: 0.20, d: 0.16 }, // G5
-        { f: 1046.50, t: 0.30, d: 0.18 }, // C6
-        { f: 1318.51, t: 0.42, d: 0.34 }  // E6 (held)
+
+      // gentle low-pass so everything sounds soft and rounded
+      const master = ctx.createGain();
+      master.gain.value = 0.9;
+      const mellow = ctx.createBiquadFilter();
+      mellow.type = "lowpass";
+      mellow.frequency.value = 2400;
+      master.connect(mellow);
+      mellow.connect(ctx.destination);
+
+      function tone(f, t, dur, vol, type, detune) {
+        const o = ctx.createOscillator();
+        const g = ctx.createGain();
+        o.type = type;
+        o.frequency.value = f;
+        if (detune) o.detune.value = detune;
+        g.gain.setValueAtTime(0.0001, t);
+        g.gain.linearRampToValueAtTime(vol, t + 0.05);   // soft attack
+        g.gain.exponentialRampToValueAtTime(0.0001, t + dur);
+        o.connect(g); g.connect(master);
+        o.start(t); o.stop(t + dur + 0.05);
+      }
+
+      // warm sustained C-major pad underneath (slightly detuned for richness)
+      [523.25, 659.25, 783.99].forEach(f => {
+        tone(f, now, 1.4, 0.06, "sine", 0);
+        tone(f, now, 1.4, 0.045, "triangle", 5);
+      });
+
+      // gentle rising melody: C5 - E5 - G5 - C6 (last note held)
+      const mel = [
+        [523.25, 0.00, 0.38],
+        [659.25, 0.18, 0.38],
+        [783.99, 0.36, 0.38],
+        [1046.50, 0.56, 0.85]
       ];
-      seq.forEach(n => {
-        const t = now + n.t;
-        [["triangle", 0.22], ["sine", 0.10]].forEach(([type, vol]) => {
-          const o = ctx.createOscillator();
-          const g = ctx.createGain();
-          o.type = type;
-          o.frequency.value = n.f;
-          g.gain.setValueAtTime(0.0001, t);
-          g.gain.linearRampToValueAtTime(vol, t + 0.02);
-          g.gain.exponentialRampToValueAtTime(0.0001, t + n.d);
-          o.connect(g); g.connect(ctx.destination);
-          o.start(t); o.stop(t + n.d + 0.05);
-        });
+      mel.forEach(([f, t, d]) => {
+        tone(f, now + t, d, 0.16, "triangle", 0);
+        tone(f, now + t, d, 0.07, "sine", -6);
       });
     } catch (e) { /* audio not available */ }
   }
